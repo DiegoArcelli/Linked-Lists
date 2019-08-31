@@ -15,5 +15,5 @@ For each type of list the user can perform the following operations:
   <li>Print a graphical rappresentation of the list (using an iterative function)</li>
   <li>Delete an element from the list</li>
 </ul>
-For the circular singly list I only used a pointer to the first node of the list, while for the
+<br>For the circular singly list I only used a pointer to the first node of the list, while for the
 circular doubly list I also used a pointer to the last node of the list.
