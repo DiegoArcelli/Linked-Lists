@@ -321,7 +321,7 @@ void printCircularSinglyLinkedRecursive(struct SNode* pScan, struct SNode* pFirs
     printf("Element %d: %d\n",n,pScan->val);
     printCircularSinglyLinkedRecursive(pScan->next,pFirst,n+1);
   } else {
-    printf("\n");
+    printf("Element %d: %d\n",n,pScan->val);
   }
 }
 
@@ -405,15 +405,145 @@ int getCircularSinglyLinkedLenght(struct SNode* pFirst){
   return (i==0?0:i-1);
 }
 
+//cicrular doubly linked list
+
+void tailInsertionCircularDoublyLinked(int val, struct DNode** pFirst, struct DNode** pLast){
+  struct DNode* pNode = malloc(sizeof(struct DNode));
+  pNode->val = val;
+  if(*pFirst == NULL && *pLast == NULL){
+    *pFirst = pNode;
+    *pLast = pNode;
+    pNode->next = pNode;
+    pNode->prev = pNode;
+  } else {
+    pNode->prev = *pLast;
+    pNode->next = *pFirst;
+    (*pLast)->next = pNode;
+    (*pFirst)->prev = pNode;
+    *pLast = pNode;
+  }
+}
+
+void printCircularDoublyLinked(struct DNode* pFirst){
+  if(pFirst == NULL){
+    printf("Empty list\n");
+  } else {
+    struct DNode* pScan = pFirst;
+    int i = 0;
+    do {
+      printf("<-|%d|%d|->",pScan->val,i);
+      pScan = pScan->next;
+      i++;
+    } while (pScan != pFirst);
+    printf("\n");
+  }
+}
+
+void printCircularDoublyLinkedRecursive(struct DNode* pScan, struct DNode* pFirst, int n){
+  if(pScan->next != pFirst){
+    printf("Element %d: %d\n",n,pScan->val);
+    printCircularDoublyLinkedRecursive(pScan->next,pFirst,n+1);
+  } else {
+    printf("Element %d: %d\n",n,pScan->val);
+  }
+}
+
+void headInsertionCircularDoublyLinked(int val, struct DNode** pFirst, struct DNode** pLast){
+  struct DNode* pNode = malloc(sizeof(struct DNode));
+  pNode->val = val;
+  if(*pFirst == NULL && *pLast == NULL){
+    *pFirst = pNode;
+    *pLast = pNode;
+    pNode->next = pNode;
+    pNode->prev = pNode;
+  } else {
+    (*pLast)->next = pNode;
+    (*pFirst)->prev = pNode;
+    pNode->next = *pFirst;
+    pNode->prev = *pLast;
+    pNode->next = *pFirst;
+    *pFirst = pNode;
+  }
+}
+
+void deletElementByIndexCircularDoublyLinked(int index, struct DNode** pFirst, struct DNode** pLast){
+  if(pFirst == NULL){
+    printf("Empty list\n");
+  } else {
+    struct DNode* pScan = *pFirst;
+    int i = 0;
+    do {
+      if(i == index){
+        pScan->prev->next = pScan->next;
+        pScan->next->prev = pScan->prev;
+        if(pScan == *pLast && pScan == *pFirst){
+          *pFirst = NULL;
+          *pLast = NULL;
+        } else if(pScan == *pFirst){
+          *pFirst = pScan->next;
+        } else if(pScan == *pLast){
+          *pLast = pScan->prev;
+        }
+        free(pScan);
+        break;
+      }
+      pScan = pScan->next;
+      i++;
+    } while (pScan != *pFirst);
+  }
+}
+
+void indexInsertionCircularDoublyLinked(int index, int val, struct DNode** pFirst, struct DNode** pLast){
+  struct DNode* pNode = malloc(sizeof(struct DNode));
+  pNode->val = val;
+  if(*pFirst == NULL && *pLast == NULL){
+    *pFirst = pNode;
+    *pLast = pNode;
+    pNode->next = pNode;
+    pNode->prev = pNode;
+  } else {
+    struct DNode* pScan = *pFirst;
+    int i = 0;
+    do {
+      if(i == index){
+        pNode->next = pScan;
+        pNode->prev = pScan->prev;
+        pScan->prev->next = pNode;
+        pScan->prev = pNode;
+        if(pScan == *pFirst){
+          *pFirst = pScan->prev;
+        }
+        break;
+      }
+      pScan = pScan->next;
+      i++;
+    } while (pScan != *pFirst);
+  }
+}
+
+int getCircularDoublyLinkedLenght(struct DNode* pFirst){
+  int i = 0;
+  if(pFirst != NULL){
+    struct DNode* pScan = pFirst;
+    do {
+      pScan = pScan->next;
+      i++;
+    } while (pScan != pFirst);
+  }
+  return (i==0?0:i-1);
+}
+
 int main(){
 
-int exit = 0;
-  int opz,val,idx,lim,sExit,dExit,csExit;
+  int exit = 0;
+  int opz,val,idx,lim,sExit,dExit,csExit,cdExit;
   struct SNode* sNode = NULL; //singly linked list head
   struct DNode* dNode = NULL; //doubly linked list head
   struct SNode* csNode = NULL; //circular singly linked list head
+  struct DNode* cdNodeHead = NULL; //circular doubly linked list head
+  struct DNode* cdNodeTail = NULL; //circular doubly linked list tail
   do {
-    printf("\nSelect the operation:\n1) Singly linked list\n2) Doubly linked list\n3) Circular singly linked list\n4) Exit\n");
+    printf("\nSelect the operation:\n1) Singly linked list\n2) Doubly linked list\n3) Circular singly linked list\n4) Circular doubly linked list\n5) Exit\n");
     scanf("%d",&opz);
     if(opz == 1){
       sExit = 0;
@@ -442,8 +572,8 @@ int exit = 0;
         } else if(opz == 6){
           lim = getSinglyLinkedLenght(sNode);
           printf("Insert index (0 - %d): ",lim);
-          scanf("%d",&val);
-          deletElementByIndexSinglyLinked(idx,sNode);
+          scanf("%d",&idx);
+          sNode = deletElementByIndexSinglyLinked(idx,sNode);
         } else if(opz == 7){
           sExit = 1;
         } else {
@@ -477,8 +607,8 @@ int exit = 0;
         } else if(opz == 6){
           lim = getDoublyLinkedLenght(dNode);
           printf("Insert index (0 - %d): ",lim);
-          scanf("%d",&val);
-          deletElementByIndexDoublyLinked(idx,dNode);
+          scanf("%d",&idx);
+          dNode = deletElementByIndexDoublyLinked(idx,dNode);
         } else if(opz == 7){
           dExit = 1;
         } else {
@@ -512,8 +642,8 @@ int exit = 0;
         } else if(opz == 6){
           lim = getCircularSinglyLinkedLenght(csNode);
           printf("Insert index (0 - %d): ",lim);
-          scanf("%d",&val);
-          deletElementByIndexCircularSinglyLinked(idx,csNode);
+          scanf("%d",&idx);
+          csNode = deletElementByIndexCircularSinglyLinked(idx,csNode);
         } else if(opz == 7){
           csExit = 1;
         } else {
@@ -521,6 +651,41 @@ int exit = 0;
         }
       } while (csExit == 0);
     } else if(opz == 4){
+      cdExit = 0;
+      do {
+        printf("\nCircular doubly linked list\nSelect the operation:\n1) Add element to the tail\n2) Add element to the head\n3) Add element by index\n4) Textual print\n5) Graphical print\n6) Delete element\n7) Back\n");
+        scanf("%d",&opz);
+        if(opz == 1){
+          printf("Insert value: ");
+          scanf("%d",&val);
+          tailInsertionCircularDoublyLinked(val,&cdNodeHead,&cdNodeTail);
+        } else if(opz == 2){
+          printf("Insert value: ");
+          scanf("%d",&val);
+          headInsertionCircularDoublyLinked(val,&cdNodeHead,&cdNodeTail);
+        } else if(opz == 3){
+          printf("Insert value: ");
+          scanf("%d",&val);
+          lim = getCircularDoublyLinkedLenght(cdNodeHead);
+          printf("Insert index (0 - %d): ",lim);
+          scanf("%d",&idx);
+          indexInsertionCircularDoublyLinked(idx,val,&cdNodeHead,&cdNodeTail);
+        } else if(opz == 4){
+          printCircularDoublyLinkedRecursive(cdNodeHead,cdNodeHead,0);
+        } else if(opz == 5){
+          printCircularDoublyLinked(cdNodeHead);
+        } else if(opz == 6){
+          lim = getCircularDoublyLinkedLenght(cdNodeHead);
+          printf("Insert index (0 - %d): ",lim);
+          scanf("%d",&idx);
+          deletElementByIndexCircularDoublyLinked(idx,&cdNodeHead,&cdNodeTail);
+        } else if(opz == 7){
+          cdExit = 1;
+        } else {
+          printf("Error\n");
+        }
+      } while (cdExit == 0);
+    } else if(opz == 5){
       exit = 1;
     } else {
       printf("Error\n");
